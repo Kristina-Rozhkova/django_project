@@ -1,0 +1,46 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Foodstore</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <style>
+    .pagination {
+        margin: 30px 0;
+    }
+    .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    .page-link {
+        color: #0d6efd;
+    }
+    .card {
+        transition: all 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    </style>
+</head>
+<body>
+{% include 'includes/nav_menu.html' %}
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">FoodStore</h1>
+    <p class="lead">FoodStore - это лучший выбор свежих продуктов и вкусных решений, которые вы захотите добавить в свою
+        корзину</p>
+</div>
+
+<div class="container">
+{% block content %}
+{% endblock %}
+{% include 'includes/footer.html' %}
+</div>
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

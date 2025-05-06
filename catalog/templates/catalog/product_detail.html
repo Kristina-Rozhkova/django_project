@@ -1,0 +1,30 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+{% load my_tags %}
+<div class="row text-center justify-content-center">
+    <div class="col-4">
+        <div class="card mb-4 box-shadow">
+            <img src="{{ product.image | media_filter }}" class="card-img-top">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">{{ product.name }}</h4>
+            </div>
+
+            <div class="card-body">
+                <h2 class="card-title pricing-card-title">{{ product.price }} руб.</h2>
+                {% if product.category %}
+                <p class="text-start"><u>Категория:</u> {{ product.category.name }}</p>
+                {% endif %}
+                <p class="text-start"><u>Описание:</u> {{ product.description }}</p>
+
+                <p class="list-unstyled mt-3 text-start "><u>Добавлен:</u> {{ product.created_at | date:"d M Y" }}</p>
+                <p class="list-unstyled mt-3 text-start"><u>Изменен:</u> {{ product.upload_at | date:"d M Y" }}</p>
+                <button type="button" class="btn btn-lg btn-block btn-outline-primary">Добавить в корзину</button>
+                <a class="btn btn-lg btn-block btn-outline-primary" href="{% url 'catalog:home' %}"
+                   role="button">Назад</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
