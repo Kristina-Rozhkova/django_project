@@ -150,6 +150,43 @@ phyton-разработчика. Данный проект является вы
 - Добавьте функциональность для постраничного вывода списка товаров на главной странице. Убедитесь, что пользователи
   могут легко переходить между страницами списка товаров.
 
+### Домашнее задание №4
+
+**Контекст:** Настало время провести рефакторинг веб-приложения и добавить функциональность для улучшения SEO сайта
+путем создания раздела с блогом. Блог поможет улучшить видимость сайта в поисковых системах и привлечь больше
+посетителей за счет публикации качественного контента.
+
+**Задание 1.**
+
+Переведите имеющиеся в проекте контроллеры с FBV на CBV.
+
+**Задание 2.**
+
+Создайте новое приложение для блога и добавьте его в файл settings.py.
+
+Создайте новую модель блоговой записи со следующими полями:
+
+- заголовок,
+- содержимое,
+- превью (изображение),
+- дата создания,
+- признак публикации (булевое поле),
+- количество просмотров.
+
+Для работы с блогом реализуйте полный CRUD для новой модели, используя CBV.
+
+**Задание 3.**
+
+Модифицируйте вывод и обработку запросов, добавив следующую логику на уровне контроллеров:
+
+- Увеличение счетчика просмотров: при открытии отдельной статьи увеличивать счетчик просмотров.
+- Фильтрация опубликованных статей: выводить в список статей только те, которые имеют положительный признак публикации.
+- Перенаправление после редактирования: после успешного редактирования записи необходимо перенаправлять пользователя на
+  просмотр этой статьи.
+
+***Дополнительное задание**
+
+Когда статья достигает 100 просмотров, отправляйте себе на почту поздравление с достижением.
 ___
 
 ## Установка
@@ -192,14 +229,37 @@ djangoproject/
 │   ├── templates/
 │   │   ├── catalog/
 │   │   │   ├── base.html
-│   │   │   ├── home.html
-│   │   │   ├── contacts.html
+│   │   │   ├── product_list.html
+│   │   │   ├── contact_form.html
 │   │   │   ├── product_detail.html
-│   │   │   └── add_new_product.html
+│   │   │   ├── product_form.html
+│   │   │   └── product_confirm_delete.html
 │   │   ├── includes/
 │   │   │   ├── nav_menu.html
 │   │   │   ├── footer.html
 │   │   │   └── pagination.html
+│   ├── templatetags/
+│   └── └── my_tags.py
+├── blog/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   ├── views.py
+│   ├── migrations/
+│   ├── templates/
+│   │   ├── blog/
+│   │   │   ├── base.html
+│   │   │   ├── article_list.html
+│   │   │   ├── article_detail.html
+│   │   │   ├── article_form.html
+│   │   │   ├── article_confirm_delete.html
+│   │   │   ├── includes/
+│   │   │   │   ├── nav_menu.html
+│   │   │   │   ├── footer.html
+│   └── └── └── └── pagination.html
 │   ├── templatetags/
 │   │   └── my_tags.py
 ```
@@ -223,6 +283,18 @@ ___
 - [tests.py](catalog/tests.py)
 - [urls.py](catalog/urls.py)
 
+Пакет blog содержит следующие пакеты и модули:
+
+- [templates](blog/templates/blog) - директория, содержащая веб-страницы
+- [migrations](blog/migrations) - миграции приложени
+- [my_tags.py](blog/templatetags/my_tags.py)
+- [admin.py](blog/admin.py)
+- [apps.py](blog/apps.py)
+- [models.py](blog/models.py)
+- [views.py](blog/views.py)
+- [tests.py](blog/tests.py)
+- [urls.py](blog/urls.py)
+
 ---
 
 ## Содержание модулей
@@ -236,14 +308,18 @@ ___
     - [base.html](catalog/templates/catalog/base.html). Базовый шаблон веб-страниц.
     - [nav_menu.html](catalog/templates/includes/nav_menu.html). Подшаблон навигации, включенный в базовый шаблон.
     - [footer.html](catalog/templates/includes/footer.html). Подшаблон подвала, включенный в базовый шаблон.
-    - [home.html](catalog/templates/catalog/home.html). Шаблон главной страницы. Отображает список последних добавленных
-      товаров.
+    - [product_list.html](catalog/templates/catalog/product_list.html). Шаблон главной страницы. Отображает список
+      последних добавленных товаров.
+    - [product_detail.html](catalog/templates/catalog/product_detail.html). Шаблон для просмотра детальной информации
+      продукта.
     - [pagination.html](catalog/templates/includes/pagination.html). Подшаблон плагинации, включенный в шаблон главной
       страницы.
-    - [contacts.html](catalog/templates/catalog/contacts.html). Шаблон страницы контактов. Включает форму обратной
-      связи.
-    - [add_new_product.html](catalog/templates/catalog/add_new_product.html). Шаблон с формой добавления нового продукта
+    - [contact_form.html](catalog/templates/catalog/contact_form.html). Шаблон страницы контактов. Включает форму
+      обратной связи.
+    - [product_form.html](catalog/templates/catalog/product_form.html). Шаблон с формой добавления нового продукта
       в базу данных.
+    - [product_confirm_delete.html](catalog/templates/catalog/product_confirm_delete.html). Шаблон для удаления продукта
+      из базы данных.
     - [my_tags.py](catalog/templatetags/my_tags.py). Кастомный фильтр для обработки путей к медиафайлам Django.
     - [admin.py](catalog/admin.py). Конфигурация админ-панели Django. Регистрация моделей (Product, Category, Contact) и
       кастомизация их отображения.
@@ -251,13 +327,42 @@ ___
     - [models.py](catalog/models.py). Модели данных: Product (товары), Category (категории), Contact (контактные
       данные).
     - [tests.py](catalog/tests.py). Тесты для проверки функциональности приложения (моделей, представлений).
-    - [urls.py](catalog/urls.py). Маршруты приложения: home/ (главная), contacts/ (контакты).
-    - [views.py](catalog/views.py). Логика отображения страниц: home() (вывод товаров), contacts() (обработка формы
-      связи), product_detail() (вывод подробной информации о конкретном товаре), add_new_product() (обработка формы
-      добавления товара и его внесение в базу данных).
+    - [urls.py](catalog/urls.py). Маршруты приложения: catalog/ (главная), contacts/ (контакты).
+    - [views.py](catalog/views.py). Реализован полный CRUD. На главной странице список товаров отсортирован по дате
+      создания в порядке убывания. При редактировании информации о товаре, пользователя выбрасывает на страницу
+      детального просмотра этого товара. При заполнении формы контактной информации, в консоль выводится сообщение о
+      заполненных данных.
 2. Директория [config](config)
     - [asgi.py](config/asgi.py). Конфигурация ASGI для запуска приложения с асинхронными серверами.
     - [settings.py](config/settings.py). Настройки проекта: база данных psql, шаблоны, статические файлы, подключённые
       приложения.
     - [urls.py](config/urls.py). Корневые маршруты проекта. Подключает URL-адреса приложения catalog.
     - [wsgi.py](config/wsgi.py). Конфигурация WSGI для запуска приложения с синхронными серверами.
+3. Приложение [blog](blog).
+
+   Реализация работы блога:
+    - [base.html](blog/templates/blog/base.html). Базовый шаблон веб-страниц.
+    - [nav_menu.html](blog/templates/blog/includes/nav_menu.html). Подшаблон навигации, включенный в базовый шаблон.
+    - [footer.html](blog/templates/blog/includes/footer.html). Подшаблон подвала, включенный в базовый шаблон.
+    - [article_list.html](blog/templates/blog/article_list.html). Шаблон главной страницы. Отображает список
+      статей.
+    - [article_detail.html](blog/templates/blog/article_detail.html). Шаблон для просмотра детальной информации
+      о статье.
+    - [pagination.html](blog/templates/blog/includes/pagination.html). Подшаблон плагинации, включенный в шаблон главной
+      страницы.
+    - [article_form.html](blog/templates/blog/article_form.html). Шаблон с формой добавления новой статьи
+      в базу данных.
+    - [article_confirm_delete.html](blog/templates/blog/article_confirm_delete.html). Шаблон для удаления продукта
+      из базы данных.
+    - [my_tags.py](blog/templatetags/my_tags.py). Кастомный фильтр для обработки путей к медиафайлам Django.
+    - [admin.py](blog/admin.py). Конфигурация админ-панели Django. Регистрация моделей (Product, Category, Contact) и
+      кастомизация их отображения.
+    - [apps.py](blog/apps.py). Конфигурация приложения blog. Определяет имя приложения и метаданные.
+    - [models.py](blog/models.py). Модель данных - Article (статья).
+    - [tests.py](blog/tests.py). Тесты для проверки функциональности приложения (моделей, представлений).
+    - [urls.py](blog/urls.py). Маршруты приложения начинаются с 'blog/'.
+    - [views.py](blog/views.py). Для блоговой записи реализован полный CRUD. Также на странице просмотра статей
+      применяется фильтрация по флагу публикации и дате создания в порядке убывания. Реализован счетчик просмотра статьи
+      при переходе на страницу детального просмотра. Когда количество просмотров достигнет 100, на почту отправляется
+      письмо с поздравлениями. Помимо этого пользователя выбрасывает на страницу детального просмотра информации о
+      статье при ее успешном редактировании.

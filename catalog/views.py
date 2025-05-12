@@ -1,64 +1,57 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
-from catalog.models import Contact, Product, Category
-import datetime
-from django.core.paginator import Paginator
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
+from django.contrib import messages
+from catalog.models import Contact, Product
 
 
-def home(request):
-    last_products = Product.objects.all().order_by('-created_at')[:5]
+class ProductListView(ListView):
+    model = Product
+    paginate_by = 4
 
-    # определение количества товаров на странице
-    paginator = Paginator(last_products, 4)
+    def get_queryset(self):
+        queryset = super().get_queryset().order_by('-created_at')
 
-    page_number = request.GET.get('page')
-    # создание объекта страницы с товарами для текущего номера страницы
-    page_obj = paginator.get_page(page_number)
+        list_products = queryset[:5]
+        for product in list_products:
+            print(f'{product.name} - {product.created_at}')
 
-    # вывод в консоль последних 5 добавленных продуктов
-    print('Последние 5 продуктов:')
-    for product in last_products:
-        print(f'{product.name} - {product.created_at}')
-
-    return render(request, 'catalog/home.html', {'page_obj': page_obj, 'paginator': paginator})
+        return list_products
 
 
-def contacts(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        phone_number = request.POST.get('phone')
-        message = request.POST.get('message')
-        print(f"Пользователь отправил данные: name: {name}, phone: {phone_number}, message: {message}")
-        Contact.objects.create(name=name, phone=phone_number, message=message)
-        return HttpResponse('Данные отправлены!')
-    return render(request, 'catalog/contacts.html')
+class ProductDetailView(DetailView):
+    model = Product
 
 
-def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    context = {'product': product}
-    return render(request, 'catalog/product_detail.html', context)
+class ProductCreateView(CreateView):
+    model = Product
+    fields = ['name', 'description', 'image', 'category', 'price']
+    success_url = reverse_lazy('catalog:product_list')
 
 
-def add_new_product(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        description = request.POST.get('description')
-        image = request.FILES.get('image')
-        category = request.POST.get('category')
-        if category:
-            category_id = Category.objects.get(id=category)
-        price = request.POST.get('price')
+class ProductUpdateView(UpdateView):
+    model = Product
+    fields = ['name', 'description', 'image', 'category', 'price']
+    success_url = reverse_lazy('catalog:product_list')
 
-        Product.objects.create(
-            name=name,
-            description=description,
-            category=category_id if category else None,
-            price=price,
-            image=image,
-            created_at=datetime.date.today(),
-            upload_at=datetime.date.today()
-        )
-        return redirect('catalog:home')
-    categories = Category.objects.all()
-    return render(request, 'catalog/add_new_product.html', {'categories': categories})
+    def get_success_url(self):
+        return reverse('catalog:product_detail', args=[self.kwargs.get('pk')])
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('catalog:product_list')
+
+
+class ContactsView(TemplateView):
+    template_name = 'catalog/contact_form.html'
+
+    def post(self, request, *args, **kwargs):
+        data = {
+            'name': request.POST.get('name'),
+            'phone': request.POST.get('phone'),
+            'message': request.POST.get('message'),
+        }
+        Contact.objects.create(name=data.get('name'), phone=data.get('phone'), message=data.get('message'))
+        print(f"Пользователь отправил данные:\nname: {data.get('name')}, phone: {data.get('phone')}, message: {data.get('message')}")
+        messages.success(request, 'Ваше сообщение успешно отправлено!')
+        return super().get(request, *args, **kwargs)
