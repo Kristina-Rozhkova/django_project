@@ -32,10 +32,13 @@ class Product(models.Model):
     price = models.FloatField(
         verbose_name="Цена за покупку", help_text="Введите цену за покупку продукта"
     )
-    created_at = models.DateField(
-        verbose_name="Дата создания", help_text="Укажите дату создания"
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Дата создания",
+        help_text="Укажите дату создания"
     )
-    upload_at = models.DateField(
+    upload_at = models.DateTimeField(
+        auto_now_add=True,
         verbose_name="Дата последнего изменения",
         help_text="Укажите дату последнего изменения",
     )
@@ -74,7 +77,7 @@ class Contact(models.Model):
     name = models.CharField(max_length=50, verbose_name='Имя', help_text='Введите имя')
     phone = models.CharField(max_length=30, verbose_name='Телефон', help_text='Введите номер телефона')
     message = models.TextField(verbose_name='Сообщение', help_text='Введите дополнительную информацию', blank=
-                               True, null=True)
+    True, null=True)
 
     def __str__(self):
         return (f'Контактные данные:\n'
@@ -84,5 +87,7 @@ class Contact(models.Model):
     class Meta:
         verbose_name = 'контакт'
         verbose_name_plural = 'контакты'
-        ordering = ['name',]
+        ordering = ['name', ]
+
+
 
