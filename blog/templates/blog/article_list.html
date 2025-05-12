@@ -1,0 +1,25 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+{% load my_tags %}
+<div class="row text-center">
+    {% for article in page_obj %}
+    <div class="col-4">
+        <div class="card mb-4 box-shadow">
+            <img src="{{ article.photo | media_filter }}" class="card-img-top" style="width: 100%; height: 260px;">
+            <div class="card-header" style="height: 80px;">
+                <h4 class="my-0 font-weight-normal">{{ article.title }}</h4>
+            </div>
+            <div class="card-body">
+                <p>{{ article.text|truncatechars:100}}</p>
+                <a class="btn btn-lg btn-block btn-outline-primary mb-2"
+                   href="{% url 'blog:article_detail' article.pk %}" role="button">Подробнее</a>
+                <div class="card-footer text-body-secondary">
+                    Количество просмотров: {{ article.view_counter }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% include 'blog/includes/pagination.html' %}
+{% endblock %}
