@@ -44,10 +44,6 @@ class ProductForm(StyleFormMixin, ModelForm):
     def clean_image(self):
         image = self.cleaned_data.get('image')
         if image:
-            # try:
-            #     validate_image_file_extension(image)
-            # except ValidationError:
-            #     raise ValidationError('Допустимые форматы: JPEG, PNG.')
             max_size = 5 * 1024 * 1024
             if image.size > max_size:
                 raise ValidationError('Максимальный размер изображения 5 МБ')
