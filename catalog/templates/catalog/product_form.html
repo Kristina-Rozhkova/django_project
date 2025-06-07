@@ -14,7 +14,8 @@
             <div class="card-body">
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    {{ form|crispy }}
+                    {{ form.as_p }}
+<!--                    {{ form|crispy }}-->
                     {% if object %}
                     <button type="submit" class="btn btn-block btn-outline-primary">Изменить</button>
                     <a class="btn btn-block btn-outline-danger" href="{% url 'catalog:product_delete' product.pk %}"
