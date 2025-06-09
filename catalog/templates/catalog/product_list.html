@@ -11,8 +11,10 @@
                 </div>
                 <div class="card-body">
                     <p>Описание: {{ product.description|truncatechars:100}}</p>
+                    {% if user.is_authenticated %}
                     <a class="btn btn-lg btn-block btn-outline-primary"
                        href="{% url 'catalog:product_detail' product.pk %}" role="button">Подробнее</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
