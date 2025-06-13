@@ -1,6 +1,5 @@
 {% extends 'catalog/base.html' %}
 {% block content %}
-{% load crispy_forms_tags %}
 <div class="row">
     <div class="col-lg-6 col-md-8 mx-auto">
         <div class="card mb-4 box-shadow">
@@ -15,11 +14,12 @@
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.as_p }}
-<!--                    {{ form|crispy }}-->
                     {% if object %}
                     <button type="submit" class="btn btn-block btn-outline-primary">Изменить</button>
-                    <a class="btn btn-block btn-outline-danger" href="{% url 'catalog:product_delete' product.pk %}"
-                       role="button">Удалить</a>
+                        {% if perms.catalog.delete_product or user == object.owner %}
+                        <a class="btn btn-block btn-outline-danger" href="{% url 'catalog:product_delete' product.pk %}"
+                           role="button">Удалить</a>
+                        {% endif %}
                     {% else %}
                     <button type="submit" class="btn btn-block btn-outline-primary">Добавить</button>
                     {% endif %}

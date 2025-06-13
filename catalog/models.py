@@ -1,8 +1,18 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
 
+from users.models import User
+
 
 class Product(models.Model):
+    PUBLISHED = 'published'
+    UNPUBLISHED = 'unpublished'
+
+    PUBLICATION_STATUS_CHOICES = [
+        (PUBLISHED, 'Опубликовать'),
+        (UNPUBLISHED, 'На рассмотрении')
+    ]
+
     name = models.CharField(
         max_length=100,
         verbose_name="Наименование продукта",
@@ -47,6 +57,20 @@ class Product(models.Model):
         verbose_name="Дата последнего изменения",
         help_text="Укажите дату последнего изменения",
     )
+    publication_status = models.CharField(
+        max_length=15,
+        choices=PUBLICATION_STATUS_CHOICES,
+        default=UNPUBLISHED,
+        verbose_name='Статус публикации'
+    )
+    owner = models.ForeignKey(
+        User,
+        verbose_name='владелец',
+        blank=True,
+        null=True,
+        help_text='Укажите владельца',
+        on_delete=models.SET_NULL
+    )
 
     def __str__(self):
         return f'{self.name} относится к категории "{self.category}". Цена за единицу - {self.price}'
@@ -55,6 +79,9 @@ class Product(models.Model):
         verbose_name = "продукт"
         verbose_name_plural = "продукты"
         ordering = ["category", "name"]
+        permissions = [
+            ('can_unpublish_product', 'Can unpublish product')
+        ]
 
 
 class Category(models.Model):
