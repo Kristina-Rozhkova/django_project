@@ -20,7 +20,7 @@ class ProductForm(StyleFormMixin, ModelForm):
 
     class Meta:
         model = Product
-        exclude = ('created_at', 'upload_at')
+        exclude = ('created_at', 'upload_at', 'publication_status', 'owner')
 
     def clean_name(self):
         name = self.cleaned_data.get('name').lower()
@@ -48,3 +48,9 @@ class ProductForm(StyleFormMixin, ModelForm):
             if image.size > max_size:
                 raise ValidationError('Максимальный размер изображения 5 МБ')
         return image
+
+
+class ProductModeratorForm(ProductForm):
+    class Meta:
+        model = Product
+        fields = ('publication_status',)

@@ -15,8 +15,10 @@
                     <p>Добавлено: {{ object.created_at|date:"d M Y" }}</p>
                     <a class="btn btn-lg btn-block btn-outline-primary"
                        href="{% url 'blog:article_list' %}" role="button">Вернуться</a>
+                    {% if perms.blog.change_article %}
                     <a class="btn btn-lg btn-block btn-outline-primary"
                        href="{% url 'blog:article_update' article.pk %}" role="button">Изменить</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
