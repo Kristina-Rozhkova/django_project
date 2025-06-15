@@ -12,7 +12,9 @@
                     {% csrf_token %}
                     <a class="btn btn-block btn-outline-primary" href="{% url 'catalog:product_list' %}"
                        role="button">Отменить</a>
+                    {% if perms.catalog.delete_product %}
                     <button type="submit" class="btn btn-block btn-outline-primary">Удалить</button>
+                    {% endif %}
                 </form>
             </div>
         </div>
