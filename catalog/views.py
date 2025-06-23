@@ -5,6 +5,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib import messages
 from catalog.models import Contact, Product
 from .forms import ProductForm, ProductModeratorForm
+from .services import get_products_in_category, get_products_from_cache
 
 
 class ProductListView(ListView):
@@ -12,7 +13,7 @@ class ProductListView(ListView):
     paginate_by = 4
 
     def get_queryset(self):
-        queryset = super().get_queryset().order_by('-created_at')
+        queryset = get_products_from_cache()
 
         if not self.request.user.is_authenticated or not self.request.user.groups.exists():
             list_products = queryset.filter(publication_status=Product.PUBLISHED)[:5]
@@ -23,6 +24,15 @@ class ProductListView(ListView):
             print(f'{product.name} - {product.created_at}')
 
         return list_products
+
+
+class ProductCategoryListView(ProductListView):
+    def get_queryset(self):
+        queryset = super().get_queryset().model.objects.all()
+
+        category_id = self.kwargs['category_id']
+        return get_products_in_category(queryset, category_id)
+
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
@@ -57,7 +67,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
             return ProductModeratorForm
         if user == self.object.owner:
             return ProductForm
-        return PermissionDenied
+        raise PermissionDenied
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
