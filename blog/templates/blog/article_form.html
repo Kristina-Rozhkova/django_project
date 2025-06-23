@@ -15,7 +15,7 @@
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form|crispy }}
-                    {% if object %}
+                    {% if object and perms.blog.change_article %}
                     <button type="submit" class="btn btn-block btn-outline-primary">Изменить</button>
                     <a class="btn btn-block btn-outline-danger" href="{% url 'blog:article_delete' article.pk %}"
                        role="button">Удалить</a>
